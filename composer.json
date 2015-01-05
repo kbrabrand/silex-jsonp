@@ -13,5 +13,10 @@
             "name": "Kristoffer Brabrand",
             "email": "kristoffer@brabrand.no"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "KBrabrand\\Silex\\Provider\\": "lib/"
+        }
+    }
 }
