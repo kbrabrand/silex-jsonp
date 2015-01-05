@@ -1,0 +1,17 @@
+{
+    "name": "kbrabrand/silex-jsonp",
+    "description": "Content type aware JSON response handler for Silex",
+    "require": {
+        "silex/silex": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kristoffer Brabrand",
+            "email": "kristoffer@brabrand.no"
+        }
+    ]
+}
