@@ -16,19 +16,41 @@ class JSONPServiceProvider implements ServiceProviderInterface {
         'application/javascript',
     );
 
-	public function register(Application $app) {}
+	/**
+	 * Get accepted JSONP content types
+	 *
+	 * @return string[] Content types
+	 */
+	private function getJSONPContentTypes(Application $app) {
+		if (isset($app['JSONP.contentTypes'])) {
+			return $app['JSONP.contentTypes'];
+		}
 
-	public function boot(Application $app) {
-		var_dump($app['jsonp_callback']);
+		return $this->jsonpContentTypes;
+	}
 
-		$app->after(function (Request $req, Response $res) {
-            $callback = $req->get('callback');
+	/**
+	 * Get JSONP callback param name
+	 *
+	 * @return string Callback param name
+	 */
+	private function getJSONPCallback(Application $app) {
+		if (isset($app['JSONP.callback'])) {
+			return $app['JSONP.callback'];
+		}
+
+		return 'callback';
+	}
+
+	public function register(Application $app) {
+		$app['JSONP'] = $app->protect(function (Request $req, Response $res) use ($app) {
+            $callback = $this->getJSONPCallback($app);
 
             if ($callback !== null && $req->getMethod() === 'GET') {
                 $contentType = $res->headers->get('Content-Type');
 
                 // If the content type doesn't match, just quit
-                if (!in_array($contentType, $this->jsonpContentTypes)) {
+                if (!in_array($contentType, $this->getJSONPContentTypes($app))) {
                     // Don't touch the response
                     return;
                 }
@@ -40,5 +62,9 @@ class JSONPServiceProvider implements ServiceProviderInterface {
                 }
             }
         });
+	}
+
+	public function boot(Application $app) {
+		$app->after($app['JSONP']);
 	}
 }
