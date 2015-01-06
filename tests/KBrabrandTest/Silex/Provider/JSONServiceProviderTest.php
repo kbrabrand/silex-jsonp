@@ -14,7 +14,7 @@ class JSONPServiceProviderTest extends \PHPUnit_Framework_TestCase {
         $app->register(new JSONPServiceProvider());
 
         $app->get('/', function() use ($app) {
-            return $app->json([1, 2, 3]);
+            return $app->json(array(1, 2, 3));
         });
 
         $app->handle(Request::create('/'));
