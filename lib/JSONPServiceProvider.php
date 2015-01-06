@@ -34,7 +34,7 @@ class JSONPServiceProvider implements ServiceProviderInterface {
 	 *
 	 * @return string Callback param name
 	 */
-	private function getJSONPCallback(Application $app) {
+	private function getJSONPCallbackParam(Application $app) {
 		if (isset($app['JSONP.callback'])) {
 			return $app['JSONP.callback'];
 		}
@@ -44,7 +44,7 @@ class JSONPServiceProvider implements ServiceProviderInterface {
 
 	public function register(Application $app) {
 		$app['JSONP'] = $app->protect(function (Request $req, Response $res) use ($app) {
-            $callback = $this->getJSONPCallback($app);
+            $callback = $req->get($this->getJSONPCallbackParam($app));
 
             if ($callback !== null && $req->getMethod() === 'GET') {
                 $contentType = $res->headers->get('Content-Type');
@@ -58,7 +58,7 @@ class JSONPServiceProvider implements ServiceProviderInterface {
                 if ($res instanceof JsonResponse) {
                     $res->setCallBack($callback);
                 } else {
-                    $res->setContent($callback . '(' . $res->getContent() . ');');
+                    $res->setContent(sprintf('%s(%s);', $callback, $res->getContent()));
                 }
             }
         });

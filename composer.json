@@ -16,7 +16,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "KBrabrand\\Silex\\Provider\\": "lib/"
+            "KBrabrand\\Silex\\Provider\\": "lib/",
+            "KBrabrand\\Tests\\": "tests/"
         }
     }
 }
