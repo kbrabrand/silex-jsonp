@@ -9,7 +9,7 @@ branches:
     - master
 before_script:
   - composer self-update
-  - composer -n --no-ansi --dev install
+  - composer -n --no-ansi install --dev --prefer-source
 script:
   - ./bin/phpunit --verbose
 
