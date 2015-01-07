@@ -2,7 +2,7 @@
     "name": "kbrabrand/silex-jsonp",
     "description": "Content type aware JSON response handler for Silex",
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.3.0",
         "silex/silex": "~1.0"
     },
     "require-dev": {
