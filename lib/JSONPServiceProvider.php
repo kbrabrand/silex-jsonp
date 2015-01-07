@@ -9,48 +9,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class JSONPServiceProvider implements ServiceProviderInterface {
-	// Allowed JSONP content types
-	private $jsonpContentTypes = array(
-        'application/json',
-        'application/json; charset=utf-8',
-        'application/javascript',
-    );
+    public function register(Application $app) {
 
-	/**
-	 * Get accepted JSONP content types
-	 *
-	 * @return string[] Content types
-	 */
-	private function getJSONPContentTypes(Application $app) {
-		if (isset($app['JSONP.contentTypes'])) {
-			return $app['JSONP.contentTypes'];
-		}
+        $app['JSONP.callback'] = 'callback';
 
-		return $this->jsonpContentTypes;
-	}
+        $app['JSONP.contentTypes'] = array(
+            'application/json',
+            'application/json; charset=utf-8',
+            'application/javascript',
+        );
 
-	/**
-	 * Get JSONP callback param name
-	 *
-	 * @return string Callback param name
-	 */
-	private function getJSONPCallbackParam(Application $app) {
-		if (isset($app['JSONP.callback'])) {
-			return $app['JSONP.callback'];
-		}
-
-		return 'callback';
-	}
-
-	public function register(Application $app) {
-		$app['JSONP'] = $app->protect(function (Request $req, Response $res) use ($app) {
-            $callback = $req->get($this->getJSONPCallbackParam($app));
+        $app['JSONP'] = $app->protect(function (Request $req, Response $res) use ($app) {
+            $callback = $req->get($app['JSONP.callback']);
 
             if ($callback !== null && $req->getMethod() === 'GET') {
                 $contentType = $res->headers->get('Content-Type');
 
                 // If the content type doesn't match, just quit
-                if (!in_array($contentType, $this->getJSONPContentTypes($app))) {
+                if (!in_array($contentType, $app['JSONP.contentTypes'])) {
                     // Don't touch the response
                     return;
                 }
@@ -62,9 +38,9 @@ class JSONPServiceProvider implements ServiceProviderInterface {
                 }
             }
         });
-	}
+    }
 
-	public function boot(Application $app) {
-		$app->after($app['JSONP']);
-	}
+    public function boot(Application $app) {
+        $app->after($app['JSONP']);
+    }
 }
